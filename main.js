@@ -1,61 +1,202 @@
-alert("Task 1");
-const name = prompt("What's your name?");
-alert(`Hi, ${name}`);
+//Task 1 
+alert("Task 1")
 
+class Marker {
+    constructor(color, ink) {
+        this.color = color;
+        this.ink = ink;
+    }
+    print(string) {
+        let output = '';
+        for (let i = 0; i < string.length; i++) {
+            if (this.ink <= 0)
+                break;
+            output += string[i];
+            if (string[i] !== ' ') {
+                this.ink -= 0.5;
+            }
+        }
+        alert(output);
+    }
+}
+
+class FilledMarker extends Marker {
+    constructor(color, ink, isFilled) {
+        super(color, ink);
+        this.isFilled = isFilled;
+    }
+    fill() {
+        if (this.ink < 100) {
+            this.ink = 100;
+            this.isFilled = true;
+            alert("Marker has been refilled!");
+        } else {
+            alert("Marker is already full!");
+        }
+    }
+}
+let userColor, userInk;
+
+do {
+    userColor = prompt("Enter your color:");
+} while (!userColor);
+
+do {
+    userInk = parseFloat(prompt("Enter an amount of ink in percentage (0-100):"));
+} while (isNaN(userInk) || userInk > 100 || userInk < 0);
+
+const userMarker = new FilledMarker(userColor, userInk);
+
+const userText = prompt("Enter text to print:");
+userMarker.print(userText);
+
+if (confirm("Do you want to refill the marker?")) {
+    userMarker.fill();
+}
+
+//Task 2 
 alert("Task 2");
-const year = 2025;
-birth_year = prompt("Enter your birth year:");
-age = year - birth_year;
-alert(`Your age is ${age}`);
 
+const months = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
+class ExtendedDate extends Date {
+    currentDate() {
+        return `${this.getDate()} ${months[this.getMonth()]}`;
+    }
+
+    checkDate() {
+        const current = new Date();
+        return this >= current;
+    }
+
+    checkYear() {
+        const year = this.getFullYear();
+        return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    }
+
+    nextDate() {
+        const next = new Date(this);
+        next.setDate(this.getDate() + 1);
+        return `${next.getDate()} ${months[next.getMonth()]} ${next.getFullYear()}`;
+    }
+}
+
+const today = new ExtendedDate();
+alert("Current date: " + today.currentDate());
+
+const userDateInput = prompt("Enter any date (in format YYYY-MM-DD):");
+const userDate = new ExtendedDate(userDateInput);
+alert("Future/current date: " + userDate.checkDate());
+
+const userYearInput = prompt("Enter any year to check if it's leap:");
+const yearDate = new ExtendedDate(userYearInput, 0);
+alert("Leap year: " + yearDate.checkYear());
+
+if (confirm("Do you want to see next date?")) {
+    alert("Next date: " + today.nextDate());
+}
+
+//Task 3
 alert("Task 3");
-square_side = prompt("Enter the length of the side of a square:");
-perimeter = 4 * square_side;
-alert(`The perimeter of square is ${perimeter}`);
 
+class Employee {
+    constructor(position, salary, experience) {
+        this.position = position;
+        this.salary = salary;
+        this.experience = experience;
+    }
+}
+
+const bankEmployees = [
+    new Employee('Teller', 15000, 2),
+    new Employee('Loan Officer', 25000, 4),
+    new Employee('Call Center Representative', 12000, 1),
+    new Employee('Branch Manager', 30000, 5),
+    new Employee('Financial Analyst', 28000, 3),
+    new Employee('Cash Collector', 18000, 2),
+    new Employee('Security Specialist', 22000, 3)
+];
+
+class EmpTable {
+    constructor(employees) {
+        this.employees = employees;
+    }
+
+    getHtml() {
+        let html = '<table border="1">';
+
+        html += `
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Experience</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        this.employees.forEach((employee, index) => {
+            html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${employee.position}</td>
+                    <td>${employee.salary}</td>
+                    <td>${employee.experience}</td>
+                </tr>`;
+        });
+
+        html += '</tbody></table>';
+        return html;
+    }
+}
+const empTable = new EmpTable(bankEmployees);
+
+const tableHtml = empTable.getHtml();
+
+const previewWindow = window.open();
+previewWindow.document.write(tableHtml);
+
+//Task 4
 alert("Task 4");
-radius = prompt("Enter the radius of circle:");
-area = Math.PI * radius ** 2;
-alert(`The area of circle is ${area}`);
 
-alert("Task 5");
-distance = prompt("Enter the distance between cities:");
-time = prompt("Enter the time you want to get to another city:");
-speed = distance / time;
-alert(`Your speed should be ${speed} km/h or higher.`);
+class StyledEmpTable extends EmpTable {
+    getStyles() {
+        return `
+      <style>
+        table {
+          border-collapse: collapse;
+          width: 80%;
+          margin: 20px auto;
+          font-family: Arial, sans-serif;
+          box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+        th {
+          background-color: #080aa1ff;
+          color: white;
+          padding: 12px;
+          text-align: left;
+        }
+        td {
+          padding: 10px;
+          border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+          background-color: #f2f2f2;
+        }
+        tr:hover {
+          background-color: #e9e9e9;
+        }
+      </style>`;
+    }
 
-alert("Task 6");
-const euro = 0.86;
-dollars = prompt("Enter the quantity of dollars:");
-result = dollars * euro;
-alert(`The amount is ${result}`);
+    getHtml() {
+        const parentHtml = super.getHtml(); 
+        return this.getStyles() + parentHtml; 
+    }
+}
+const styledTable = new StyledEmpTable(bankEmployees);
 
-alert("Task 7");
-storage_capacity = prompt("Enter storage capacity");
-quantity = Math.floor(storage_capacity * 1024 / 820);
-alert(`You can download file ${quantity} times`);
-
-alert("Task 8");
-money = prompt("Enter an amount of money you have:");
-chocolate_price = prompt("Enter a price of one chocolate bar:");
-quantity_1 = money / chocolate_price;
-quantity_2 = Math.floor(quantity_1);
-rest = quantity_1 - quantity_2;
-alert(`You can buy ${quantity_2} chocolate bars`);
-alert(`Your rest is ${rest}`);
-
-alert("Task 9");
-result = 0;
-number = prompt("Enter 3-digit number:");
-result += number % 10 * 100;
-number -= number % 10;
-result += number % 100;
-number -= number % 100;
-result += number / 100;
-alert(`Palindrome of your number is ${result}.`);
-
-alert("Task 10");
-integer = prompt("Enter an integer:");
-isEven = integer % 2 === 0;
-result = (isEven && "even") || "odd";
-alert(`Your number is ${result}.`);
+document.body.innerHTML = styledTable.getHtml();
